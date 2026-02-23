@@ -1,0 +1,47 @@
+catboost
+# ---------------------------
+# Core Backend Framework
+# ---------------------------
+Flask
+flask-cors
+python-dotenv
+
+# ---------------------------
+# Machine Learning & Data
+# ---------------------------
+numpy
+pandas
+scikit-learn
+xgboost
+lightgbm
+imblearn
+
+# ---------------------------
+# NLP & Resume Parsing
+# ---------------------------
+pdfplumber
+python-docx
+nltk
+spacy
+
+# ---------------------------
+# Visualization & Analytics
+# ---------------------------
+matplotlib
+seaborn
+
+# ---------------------------
+# Model Persistence
+# ---------------------------
+joblib
+
+# ---------------------------
+# Security & Authentication
+# ---------------------------
+Werkzeug
+
+# ---------------------------
+# Email Notifications
+# ---------------------------
+secure-smtplib
+email-validator
