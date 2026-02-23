@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Predictive Placement Readiness — Student Profile</title>
+  <link rel="stylesheet" href="student_profile.css">
+  <link rel="stylesheet" href="ai-loader-updated.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:wght@400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #E0F2FE 0%, #DCFCE7 100%) !important;
+      min-height: 100vh;
+    }
+    body::before {
+      display: none !important;
+    }
+    .top-nav {
+      position: static;
+      display: flex;
+      justify-content: flex-end;
+      padding: var(--space-md);
+      background: transparent !important;
+    }
+  </style>
+</head>
+<!--<body style="background: linear-gradient(135deg, #F7FAFF 0%, #ECFDF3 100%) !important;">-->
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <button type="button" id="logoutBtn" class="logout-btn">
+      <span class="btn-icon">🔒</span>
+      <span class="btn-text">Logout</span>
+    </button>
+  </nav>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <p>Analyzing your profile...</p>
+      <div class="loading-progress">
+        <div class="progress-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Toast -->
+  <div id="successToast" class="toast success" style="display: none;">
+    <div class="toast-content">
+      <span class="toast-icon">✅</span>
+      <span class="toast-message">Profile analyzed successfully!</span>
+    </div>
+  </div>
+
+  <!-- Error Toast -->
+  <div id="errorToast" class="toast error" style="display: none;">
+    <div class="toast-content">
+      <span class="toast-icon">❌</span>
+      <span class="toast-message">Analysis failed. Please try again.</span>
+    </div>
+  </div>
+
+  <main class="container fade-in">
+    <section class="form-column">
+      <form id="profileForm" enctype="multipart/form-data">
+        <h2 class="page-heading" style="display: flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #7c3aed 0%, #be185d 100%); -webkit-background-clip: text; background-clip: text; color: transparent;"><img src="student_logo2.png" alt="Student" style="width: 45px; height: 45px; object-fit: contain;"> Student Profile & Insights</h2>
+
+        <div class="card">
+          <h3>👤 Personal Information</h3>
+          <div class="row">
+            <label>
+              Full Name
+              <input name="name" required placeholder="Enter your full name" class="input-field">
+            </label>
+            <label>
+              Registration Number
+              <input name="roll_no" required placeholder="e.g. 1MS19CS001" class="input-field">
+            </label>
+          </div>
+          <div class="row">
+            <label>
+              Academic Year
+              <select name="year" required class="select-field">
+                <option value="">Select Year</option>
+                <option value="1">1st Year</option>
+                <option value="2">2nd Year</option>
+                <option value="3">3rd Year</option>
+                <option value="4">4th Year</option>
+              </select>
+            </label>
+            <label>
+              Engineering Branch
+              <select name="branch" required class="select-field">
+                <option value="">Select Branch</option>
+                <option>Computer Science & Engineering</option>
+                <option>CSE (Artificial Intelligence)</option>
+                <option>CSE (Data Science)</option>
+                <option>Electronics & Communication</option>
+                <option>Electrical & Electronics</option>
+                <option>Civil Engineering</option>
+                <option>Mechanical Engineering</option>
+              </select>
+            </label>
+          </div>
+          
+        </div>
+
+        <div class="card">
+          <h3>📊 Academic Performance</h3>
+          <div class="row">
+            <label>
+              Grading System
+              <select id="scoreType" class="select-field">
+                <option value="cgpa">CGPA (0-10 Scale)</option>
+                <option value="percentage">Percentage (0-100%)</option>
+              </select>
+            </label>
+            <label id="cgpaLabel">
+              <span id="scoreLabelText">Current CGPA</span>
+              <input id="cgpaInput" name="cgpa" type="number" step="0.01" min="0" max="10" value="7.5" required class="input-field">
+            </label>
+          </div>
+          <div class="row">
+            <label>
+              📄 Marks Sheet Upload (Optional)
+              <div class="file-upload-area" style="margin-top: 8px;">
+                <div class="file-drop-zone" id="marksFileDropZone" style="min-height: 80px;">
+                  <div class="file-drop-content">
+                    <div class="file-icon">📄</div>
+                    <p class="file-drop-text">Upload your marks sheet</p>
+                    <p class="file-drop-subtext">PDF, JPG, PNG supported</p>
+                    <input type="file" name="marks_file" id="marksFile" accept=".pdf,.jpg,.jpeg,.png" class="file-input">
+                  </div>
+                </div>
+                <div class="file-info">
+                  <span class="file-hint">📋 Supported: PDF, JPG, PNG • Max size: 5MB</span>
+                  <div class="file-status" id="marksFileStatus"></div>
+                </div>
+              </div>
+            </label>
+          </div>
+          <div class="row">
+            <label>
+              Current Backlogs
+              <select name="backlogs" required class="select-field">
+                <option value="">Select Status</option>
+                <option value="0">0 (No Backlogs)</option>
+                <option value="1">1 Subject</option>
+                <option value="2">2 Subjects</option>
+                <option value="3">3 Subjects</option>
+                <option value="4">4+ Subjects</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="card comm-card">
+          <h3>🗣️ Communication Skills Assessment</h3>
+          <div class="comm-head">
+            <div class="progress-indicator">
+              <span class="comm-progress" id="commProgress">Question 1 of 5</span>
+              <div class="progress-dots">
+                <span class="dot" data-index="1"></span>
+                <span class="dot" data-index="2"></span>
+                <span class="dot" data-index="3"></span>
+                <span class="dot" data-index="4"></span>
+                <span class="dot" data-index="5"></span>
+              </div>
+            </div>
+            <div class="score-display">
+              <span class="score-label">Live Score:</span>
+              <span class="comm-score-live" id="commLiveScore">0</span>
+              <span class="score-max">/100</span>
+            </div>
+          </div>
+          <p class="muted">Rate your communication abilities based on real experiences and comfort levels.</p>
+          <div class="comm-qs card-grid">
+            <div class="comm-q card-mini" data-index="1">
+              <div class="q-icon">🎤</div>
+              <div class="q-text">Interview Comfort Level</div>
+              <select data-q="comm" class="select-field">
+                <option value="0">0 - Not comfortable at all</option>
+                <option value="5">5 - Slightly comfortable</option>
+                <option value="10">10 - Somewhat comfortable</option>
+                <option value="15">15 - Comfortable</option>
+                <option value="20">20 - Very comfortable</option>
+              </select>
+            </div>
+            <div class="comm-q card-mini" data-index="2">
+              <div class="q-icon">💬</div>
+              <div class="q-text">Project Explanation Skills</div>
+              <select data-q="comm" class="select-field">
+                <option value="0">0 - Cannot explain clearly</option>
+                <option value="5">5 - Basic explanation</option>
+                <option value="10">10 - Adequate explanation</option>
+                <option value="15">15 - Clear explanation</option>
+                <option value="20">20 - Excellent explanation</option>
+              </select>
+            </div>
+            <div class="comm-q card-mini" data-index="3">
+              <div class="q-icon">👥</div>
+              <div class="q-text">Presentation Experience</div>
+              <select data-q="comm" class="select-field">
+                <option value="0">0 - No experience</option>
+                <option value="5">5 - Limited experience</option>
+                <option value="10">10 - Some experience</option>
+                <option value="15">15 - Good experience</option>
+                <option value="20">20 - Extensive experience</option>
+              </select>
+            </div>
+            <div class="comm-q card-mini" data-index="4">
+              <div class="q-icon">📊</div>
+              <div class="q-text">Group Discussion Skills</div>
+              <select data-q="comm" class="select-field">
+                <option value="0">0 - No experience</option>
+                <option value="5">5 - Observer mostly</option>
+                <option value="10">10 - Occasional participant</option>
+                <option value="15">15 - Active participant</option>
+                <option value="20">20 - Discussion leader</option>
+              </select>
+            </div>
+            <div class="comm-q card-mini" data-index="5">
+              <div class="q-icon">🌍</div>
+              <div class="q-text">English Proficiency</div>
+              <select data-q="comm" class="select-field">
+                <option value="0">0 - Poor</option>
+                <option value="5">5 - Basic</option>
+                <option value="10">10 - Fair</option>
+                <option value="15">15 - Good</option>
+                <option value="20">20 - Excellent</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>💻 Technical Skills Assessment</h3>
+          <div class="coding-header">
+            <p class="muted">Evaluate your programming and technical capabilities honestly for accurate insights.</p>
+            <div class="score-display">
+              <span class="score-label">Current Score:</span>
+              <span class="coding-live-score" id="codingLiveScore">0</span>
+              <span class="score-max">/90</span>
+            </div>
+          </div>
+
+          <div class="coding-questions">
+            <label>
+              🛠️ Primary Programming Language
+              <select id="lang" data-q="coding" class="select-field">
+                <option value="">Select your strongest language</option>
+                <option value="17">Python (Versatile & Industry-ready)</option>
+                <option value="16">Java (Enterprise & Android)</option>
+                <option value="14">C++ (System Programming & DSA)</option>
+                <option value="12">JavaScript (Web Development)</option>
+                <option value="18">Multiple Languages (Full-stack)</option>
+              </select>
+            </label>
+
+            <label>
+              🧠 Data Structures & Algorithms Knowledge
+              <select id="dsa" data-q="coding" class="select-field">
+                <option value="">Select your DSA proficiency</option>
+                <option value="5">Beginner (Basic concepts)</option>
+                <option value="10">Intermediate (Arrays, Strings, Loops)</option>
+                <option value="15">Advanced (Trees, Graphs, DP)</option>
+                <option value="18">Expert (Complex algorithms)</option>
+              </select>
+            </label>
+
+            <label>
+              ⚡ Coding Practice Frequency
+              <select id="practice" data-q="coding" class="select-field">
+                <option value="">How often do you practice coding?</option>
+                <option value="5">Occasionally (When needed)</option>
+                <option value="10">Weekly (Regular practice)</option>
+                <option value="15">Daily (Consistent coder)</option>
+                <option value="18">Competitive (Contest participant)</option>
+              </select>
+            </label>
+
+            <label>
+              🏆 Coding Platform Experience
+              <select id="comp" data-q="coding" class="select-field">
+                <option value="">Select platform experience</option>
+                <option value="5">None (No platform experience)</option>
+                <option value="10">Beginner (LeetCode, HackerRank)</option>
+                <option value="15">Regular (Multiple platforms)</option>
+                <option value="18">Contest Participant (CodeChef, Codeforces)</option>
+              </select>
+            </label>
+
+            <label>
+              🔍 Debugging & Problem Solving
+              <select id="debug" data-q="coding" class="select-field">
+                <option value="">Rate your debugging skills</option>
+                <option value="5">Beginner (Need help debugging)</option>
+                <option value="10">Intermediate (Can debug simple issues)</option>
+                <option value="15">Advanced (Independent debugging)</option>
+                <option value="18">Expert (Code optimization)</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>📄 Resume Upload & ATS Analysis</h3>
+          <p class="muted">Upload your resume for parsing, skill extraction, and ATS optimization insights.</p>
+          
+          <div class="file-upload-area">
+            <div class="file-drop-zone" id="fileDropZone">
+              <div class="file-drop-content">
+                <div class="file-icon">📄</div>
+                <p class="file-drop-text">Upload your resume </p>
+                <p class="file-drop-subtext">PDF, DOCx supported</p>
+                <input type="file" name="resume" id="resume" accept="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required class="file-input">
+              </div>
+            </div>
+            <div class="file-info">
+              <span class="file-hint">📋 Supported: PDF, DOCX • Max size: 2MB</span>
+              <div class="file-status" id="fileStatus"></div>
+            </div>
+          </div>
+
+          <div class="job-description-section">
+            <label>
+              🎯 Preferred Career Domain (Optional)
+              <select id="preferredDomain" name="preferred_domain" class="select-field">
+                <option value="">Select your preferred domain</option>
+                <option value="ai">AI / Machine Learning</option>
+                <option value="backend">Backend Developer</option>
+                <option value="frontend">Frontend / UI Developer</option>
+                <option value="fullstack">Full-Stack Developer</option>
+                <option value="cloud">Cloud / DevOps Engineer</option>
+                <option value="mobile">Mobile App Developer</option>
+                <option value="data">Data Analyst / BI Engineer</option>
+                <option value="testing">Software Test / QA Engineer</option>
+                <option value="security">Cybersecurity Analyst</option>
+                <option value="product">Product / Software Analyst</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="job-description-section">
+            <label>
+              🎯 Job Description (Optional - for ATS matching)
+              <textarea id="jobDescription" name="job_description" placeholder="Paste the target job description here to get ATS matching score and keyword analysis..." rows="4" class="textarea-field"></textarea>
+            </label>
+            <div class="ats-preview" id="atsMini"></div>
+          </div>
+
+          <!-- Skills Preview -->
+          <div class="skills-preview" id="skillsPreview" style="display:none; margin-top:10px; padding:10px; background:rgba(59, 130, 246, 0.1); border-radius:8px;">
+            <div style="font-size:12px; color:var(--text-muted); margin-bottom:5px;">📋 Detected Skills:</div>
+            <div id="skillsList" style="font-size:11px; color:#333;"></div>
+          </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn primary">
+            <span class="btn-icon">🔍</span>
+            <span class="btn-text">Analyze Profile</span>
+          </button>
+          <button type="button" id="editProfileBtn" class="btn secondary">
+            <span class="btn-icon">✏️</span>
+            <span class="btn-text">Edit Profile</span>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="result-column">
+      <div class="card result-card">
+        <div class="result-head">
+          <h3>📊Analysis Results</h3>
+          <div class="icons">
+            <div class="icon" title="Communication Score">🗣️</div>
+            <div class="icon" title="Technical Score">💻</div>
+            <div class="icon" title="Resume Score">📄</div>
+          </div>
+        </div>
+        
+        <div class="analytics-action">
+          <button id="viewAnalyticsBtn" class="analytics-btn" title="View comprehensive analytics dashboard">
+            <span>📈</span> View Detailed Analytics
+          </button>
+        </div>
+
+        <div class="top-stats">
+          <div class="stat">
+            <div class="stat-icon">🗣</div>
+            <div class="stat-body">
+              <div class="stat-label">Communication</div>
+              <div class="stat-bar" id="commBar"><span>0%</span></div>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon">💻</div>
+            <div class="stat-body">
+              <div class="stat-label">Technical Skills</div>
+              <div class="stat-bar" id="codingBar"><span>0%</span></div>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon">📄</div>
+            <div class="stat-body">
+              <div class="stat-label">Resume Quality</div>
+              <div class="stat-bar" id="resumeBar"><span>0%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="coding-breakdown" style="margin-top:12px;display:flex;gap:10px">
+          <div style="flex:1;background:rgba(102, 126, 234, 0.1);padding:10px;border-radius:10px;text-align:center">
+            <div style="font-size:12px;color:var(--text-muted)">Questionnaire</div>
+            <div style="font-weight:700" id="codingQuestionnaire">-</div>
+          </div>
+          <div style="flex:1;background:rgba(102, 126, 234, 0.1);padding:10px;border-radius:10px;text-align:center">
+            <div style="font-size:12px;color:var(--text-muted)">Resume Boost</div>
+            <div style="font-weight:700" id="resumeBoost">-</div>
+          </div>
+          <div style="flex:1;background:rgba(102, 126, 234, 0.1);padding:10px;border-radius:10px;text-align:center">
+            <div style="font-size:12px;color:var(--text-muted)">Final Score</div>
+            <div style="font-weight:700" id="finalCoding">-</div>
+          </div>
+        </div>
+
+        <div class="overall-wrap">
+          <div class="circle-wrap">
+            <div class="simple-circle" id="overallCircleNew">
+              <div class="circle-score" id="overallPercent">--%</div>
+            </div>
+            <div class="overall-label">Overall Readiness Score</div>
+          </div>
+
+          <div class="resume-breakdown">
+            <h4>Resume Intelligence</h4>
+            <div class="break-stats">
+              <div class="mini-card" title="Technical skills extracted from resume"><div class="mc-icon">🚀</div><div class="mc-num" id="skillsCount">-</div><div class="mc-label">Skills</div></div>
+              <div class="mini-card" title="Projects identified in resume"><div class="mc-icon">📁</div><div class="mc-num" id="projectsCount">-</div><div class="mc-label">Projects</div></div>
+              <div class="mini-card" title="Internship experiences found"><div class="mc-icon">🏢</div><div class="mc-num" id="internshipsCount">-</div><div class="mc-label">Internships</div></div>
+              <div class="mini-card" title="Certifications detected"><div class="mc-icon">🎓</div><div class="mc-num" id="certificationsCount">-</div><div class="mc-label">Certifications</div></div>
+              <div class="mini-card" title="Hackathons and competitions"><div class="mc-icon">🏆</div><div class="mc-num" id="eventsCount">-</div><div class="mc-label">Participations</div></div>
+              <div class="mini-card" title="Workshops and training programs"><div class="mc-icon">💻</div><div class="mc-num" id="workshopsCount">-</div><div class="mc-label">Workshops</div></div>
+              <div class="mini-card" title="ATS compatibility score"><div class="mc-icon">📊</div><div class="mc-num" id="atsScore">-</div><div class="mc-label">ATS Score</div></div>
+              <div class="mini-card" title="Experience index calculation"><div class="mc-icon">⚡</div><div class="mc-num" id="experienceIndex">-</div><div class="mc-label">Experience</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note muted">Insights based on resume analysis and skill assessment.</div>
+        
+        <!-- Placement Status Display -->
+        <div id="placementStatus" class="placement-status" style="display:none;">
+          <span id="placementStatusText"></span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="ai-loader-updated.js"></script>
+  <script src="student_profile.js"></script>
+</body>
+</html>

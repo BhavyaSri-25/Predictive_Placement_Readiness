@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Predictive Placement Readiness — TPO Dashboard</title>
+  <link rel="stylesheet" href="login.css">
+  <link rel="stylesheet" href="animations.css">
+  <style>
+    body {
+      background: transparent !important;
+    }
+    body::before {
+      display: none !important;
+    }
+    .fullpage-container {
+      background: linear-gradient(135deg, #F9F5FF 0%, #E9D5FF 100%) !important;
+      min-height: 100vh;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 4rem;
+      position: relative;
+    }
+    .brand-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.5rem;
+    }
+    .logout-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+    .logout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+    }
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .analytics-option {
+      padding: 2.5rem 2rem;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    @media (max-width: 768px) {
+      .analytics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 1024px) {
+      .analytics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    
+  </style>
+</head>
+<body class="bg-animated" style="background: linear-gradient(0deg, #F9F5FF 0%, #F9F5FF 100%) !important;">
+
+  <div class="fullpage-container fade-in">
+    <header class="header">
+      <div class="brand-center">
+        <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);">
+          <img src="college_logo2.png" alt="College Logo" style="width: 36px; height: 36px; object-fit: contain;">
+        </div>
+        <h1 style="font-family:'DM Serif Text', serif;color:#071032;font-size:2rem;margin:0;">Predictive Placement Readiness</h1>
+        <p class="muted" style="font-size:1rem;margin:0;">TPO Analytics Dashboard</p>
+      </div>
+      <button onclick="logoutTPO()" class="logout-btn">🔒 Logout</button>
+    </header>
+
+    <div class="analytics-grid">
+      <div class="analytics-option card-animated micro-bounce" onclick="navigateToAnalytics('student')" style="background: linear-gradient(135deg, #d6f4e0 100%); border-left: 4px solid #4CFF8A;">
+        <!--<div style="margin-bottom: 1rem;"><img src="tpo_student_logo2.png" alt="Student Logo" style="width: 55px; height: 55px; object-fit: contain;"></div>-->
+        <div style="margin-bottom: 1rem; width: 60px; height: 60px; background: #d6f4e0; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+          <img src="tpo_student_logo2.png" alt="Student Logo" style="width: 53px; height: 53px; object-fit: contain;">
+        </div>
+
+        <h3 style="font-family: 'DM Serif Text', serif; font-size: 1.5rem; margin: 0 0 0.5rem; color: var(--text-primary); font-weight: 500;">Student Analytics</h3>
+        <p class="muted" style="font-size: 1rem; margin: 0;">Individual student performance insights</p>
+      </div>
+
+      <div class="analytics-option card-animated micro-bounce" onclick="navigateToAnalytics('year')" style="background: linear-gradient(135deg, rgba(255, 177, 153, 0.2) 0%, rgb(249, 226, 226) 100%); border-left: 4px solid #FF6F91;">
+        <div style="margin-bottom: 1rem; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+          <img src="year_logo2.png" alt="Student Logo" style="width: 53px; height: 53px; object-fit: contain;">
+        </div>
+        <h3 style="font-family: 'DM Serif Text', serif; font-size: 1.5rem; margin: 0 0 0.5rem; color: var(--text-primary); font-weight: 500;">Year-wise Analytics</h3>
+        <p class="muted" style="font-size: 1rem; margin: 0;">View placement trends by academic year</p>
+      </div>
+
+      <div class="analytics-option card-animated micro-bounce" onclick="navigateToAnalytics('cohort')" style="background: linear-gradient(135deg, #f4fdf2 0%, #f4fedb 100%); border-left: 4px solid #a3e635;">
+        <div style="margin-bottom: 1rem; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+          <img src="student_dept_logo2.png" alt="Student Logo" style="width: 57px; height: 57px; object-fit: contain;">
+        </div>
+        <h3 style="font-family: 'DM Serif Text', serif; font-size: 1.5rem; margin: 0 0 0.5rem; color: var(--text-primary); font-weight: 500;">Cohort Analytics</h3>
+        <p class="muted" style="font-size: 1rem; margin: 0;">Combined year & branch insights</p>
+      </div>
+
+      <div class="analytics-option card-animated micro-bounce" onclick="navigateToAnalytics('upload')" style="background: linear-gradient(135deg, #e0e2f9 0%, #d4d6fd 100%); border-left: 4px solid #a855f7;">
+        <div style="margin-bottom: 1rem; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+          <img src="data_upload_logo2.png" alt="Student Logo" style="width: 53px; height: 53px; object-fit: contain;">
+        </div>
+        <h3 style="font-family: 'DM Serif Text', serif; font-size: 1.5rem; margin: 0 0 0.5rem; color: var(--text-primary); font-weight: 500;">Data Upload</h3>
+        <p class="muted" style="font-size: 1rem; margin: 0;">Upload and manage student data</p>
+      </div>
+
+      <div class="analytics-option card-animated micro-bounce" onclick="navigateToAnalytics('branch')" style="background: linear-gradient(135deg, #e1eefd 0%, #d6f5f8 100%); border-left: 4px solid #06b6d4;">
+        <div style="margin-bottom: 1rem; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+          <img src="branch_logo2.png" alt="Student Logo" style="width: 52px; height: 52px; object-fit: contain;">
+        </div>
+        <h3 style="font-family: 'DM Serif Text', serif; font-size: 1.5rem; margin: 0 0 0.5rem; color: var(--text-primary); font-weight: 500;">Department-wise Analytics</h3>
+        <p class="muted" style="font-size: 1rem; margin: 0;">Analyze performance by department</p>
+      </div>
+
+      
+
+      <div class="analytics-option card-animated micro-bounce" onclick="navigateToAnalytics('college')" style="background: linear-gradient(135deg, #fce9f4 0%, #fcd5e8 100%); border-left: 4px solid #e070a8;">
+        <div style="margin-bottom: 1rem; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+          <img src="tpo_college_logo2.png" alt="Student Logo" style="width: 52px; height: 52px; object-fit: contain;">
+        </div>
+        <h3 style="font-family: 'DM Serif Text', serif; font-size: 1.5rem; margin: 0 0 0.5rem; color: var(--text-primary); font-weight: 500;">College-wide Analytics</h3>
+        <p class="muted" style="font-size: 1rem; margin: 0;">Overall institutional performance</p>
+      </div>
+
+      
+    </div>
+
+    <p id="msg" class="success-msg" style="margin-top:2rem;font-weight:bold;display:none;text-align:center;"></p>
+  </div>
+
+  <script>
+function navigateToAnalytics(type) {
+  const msg = document.getElementById('msg');
+  msg.style.display = 'block';
+  msg.style.color = '#667eea';
+  msg.innerText = `Loading ${type} analytics...`;
+  
+  event.target.closest('.analytics-option').style.transform = 'scale(0.95)';
+  
+  setTimeout(() => {
+    if (type === 'year') {
+      window.location.href = 'tpo_year_analytics.html';
+    } else if (type === 'branch') {
+      window.location.href = 'tpo_branch_analytics.html';
+    } else if (type === 'cohort') {
+      window.location.href = 'tpo_cohort_analytics.html';
+    } else if (type === 'college') {
+      window.location.href = 'tpo_college_analytics.html';
+    } else if (type === 'student') {
+      window.location.href = 'tpo_student_analytics.html';
+    } else if (type === 'upload') {
+      window.location.href = 'tpo_data_upload.html';
+    } else {
+      window.location.href = 'tpo_dashboard.html';
+    }
+  }, 800);
+}
+
+async function logoutTPO() {
+  try {
+    const res = await fetch('/api/tpo/logout', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'}
+    });
+    
+    if (res.ok) {
+      window.location.href = 'login_tpo.html';
+    }
+  } catch (err) {
+    window.location.href = 'login_tpo.html';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const options = document.querySelectorAll('.analytics-option');
+  
+  options.forEach(option => {
+    option.addEventListener('mouseenter', function() {
+      this.style.transform = 'translateY(-8px) scale(1.02)';
+      this.style.boxShadow = '0 16px 48px rgba(0, 0, 0, 0.15)';
+    });
+    
+    option.addEventListener('mouseleave', function() {
+      this.style.transform = 'translateY(0) scale(1)';
+      this.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.08)';
+    });
+  });
+});
+</script>
+<script src="enhanced-animations.js"></script>
+</body>
+</html>

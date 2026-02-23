@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Predictive Placement Readiness — TPO Login</title>
+  <link rel="stylesheet" href="login.css">
+  <link rel="stylesheet" href="animations.css">
+  <style>
+    html, body {
+      background: linear-gradient(135deg, #FCE7F3 0%, #E9D5FF 100%) !important;
+      min-height: 100vh;
+    }
+    body::before {
+      display: none !important;
+    }
+    .auth-wrap {
+      background: transparent !important;
+    }
+    .auth-card {
+      background: rgba(255, 255, 255, 0.7) !important;
+    }
+  </style>
+</head>
+<!--<body class="bg-animated" style="background: linear-gradient(0deg, #F5F9FF 0%, #F9F5FF 100%) !important;">-->
+
+  <main class="auth-wrap fade-in">
+    <div class="auth-brand" style="text-align:center;margin-bottom:14px">
+      <div class="logo" style="display:inline-block">
+        <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);">
+          <img src="college_logo2.png" alt="College Logo" style="width: 36px; height: 36px; object-fit: contain;">
+        </div>
+      </div>
+      <div style="margin-top:8px;font-weight:400;font-family:'DM Serif Text', serif;color:#071032;font-size:1.75rem;">Predictive Placement Readiness</div>
+      <div class="muted" style="font-size:15px">Analytics for institutional placement preparedness</div>
+    </div>
+
+    <section class="card auth-card card-animated">
+      <h2 style="display: flex; align-items: center; gap: 8px;" class="text-fade-in">
+        <img src="tpo_logo2.png" alt="TPO" style="width: 35px; height: 35px; object-fit: contain;">TPO Login
+      </h2>
+      <p class="muted slide-in-left">Authorized access for Training & Placement Officers</p>
+
+      <input id="email" placeholder="TPO Email" class="input-animated">
+      <div style="position: relative; display: inline-block; width: 100%;">
+        <input id="password" type="password" placeholder="Password" class="input-animated" style="padding-right: 40px;">
+        <span onclick="togglePassword()" style="position: absolute; right: 12px; top: 39px; cursor: pointer; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;">
+          <img src="eye-closed.svg" alt="Show" style="width: 20px; height: 20px;">
+        </span>
+      </div>
+
+      <button onclick="loginTPO()" class="btn primary btn-animated micro-bounce">Login</button>
+
+      <p id="msg" class="success-msg" style="margin-top:10px;font-weight:bold;display:none"></p>
+
+      <div class="auth-foot muted" style="margin-top:12px">
+        <div>TPO Email: bsri2504@gmail.com</div>
+        <div>Password: tpo123</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+async function loginTPO() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+  const msg = document.getElementById('msg');
+  msg.style.display = 'none';
+
+  if (!email) { msg.style.display='block'; msg.style.color='red'; msg.innerText='❌ Email cannot be empty'; return; }
+  if (!isValidEmail(email)) { msg.style.display='block'; msg.style.color='red'; msg.innerText='❌ Invalid email ID'; return; }
+  if (!password) { msg.style.display='block'; msg.style.color='red'; msg.innerText='❌ Password cannot be empty'; return; }
+
+  try {
+    const res = await fetch('/api/tpo/login', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({email,password})
+    });
+    const data = await res.json();
+    if (res.ok) {
+      msg.style.display='block'; msg.style.color='green'; msg.innerText='✅ Login successful';
+      window.location.href = 'tpo_landing.html';
+      return;
+    } else {
+      msg.style.display='block'; msg.style.color='red'; msg.innerText = data.error || '❌ Login failed';
+    }
+  } catch (err) {
+    msg.style.display='block'; msg.style.color='red'; msg.innerText='⚠️ Server error. Try again later.';
+  }
+}
+
+function togglePassword() {
+  const passwordField = document.getElementById('password');
+  const eyeIcon = document.querySelector('span[onclick="togglePassword()"] img');
+  
+  if (passwordField.type === 'password') {
+    passwordField.type = 'text';
+    eyeIcon.src = 'eye-open.svg';
+    eyeIcon.alt = 'Hide';
+  } else {
+    passwordField.type = 'password';
+    eyeIcon.src = 'eye-closed.svg';
+    eyeIcon.alt = 'Show';
+  }
+}
+
+// Add Enter key functionality
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    loginTPO();
+  }
+});
+</script>
+<script src="enhanced-animations.js"></script>
+</body>
+</html>
+

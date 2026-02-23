@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Predictive Placement Readiness</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="landing_page.css">
+  <link rel="stylesheet" href="animations.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600&family=Newsreader:wght@300;400&family=DM+Serif+Text:wght@400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-animated">
+  <!-- Animated Background -->
+  <div class="bg-animation">
+    <div class="gradient-orb orb-1 float"></div>
+    <div class="gradient-orb orb-2 float"></div>
+    <div class="gradient-orb orb-3 float"></div>
+  </div>
+
+  <!-- Loading Screen -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <p>Loading Placement Intelligence...</p>
+    </div>
+  </div>
+
+  <main class="landing-hero">
+    <div class="hero-inner">
+      <div class="brand">
+        <div class="logo-container">
+          <div class="logo-gradient">
+            <img src="college_logo2.png" alt="Student" style="width: 44px; height: 44px; object-fit: contain;">
+          </div>
+        </div>
+      </div>
+
+      <section class="hero-card">
+        
+        <h1 class="hero-title">
+          <span class="title-gradient">Predictive Placement</span>
+          <span class="title-normal">Readiness</span>
+        </h1>
+        <p class="hero-desc">Transform your career prospects with intelligent resume parsing, and personalized improvement roadmaps designed for modern placement success.</p>
+      </section>
+
+      <section class="role-cards">
+        <div class="role-card student-card" id="studentCard">
+          <div class="card-glow"></div>
+          <div class="role-icon">
+            <img src="student_logo2.png" alt="Student" style="width: 42px; height: 42px; object-fit: contain;">
+          </div>
+          <h3>Student Portal</h3>
+          <p>Upload resume, complete assessments, and receive recommendations to boost your placement readiness.</p>
+          <button class="btn primary" data-target="student">
+            <span>Get Started</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="role-card tpo-card" id="tpoCard">
+          <div class="card-glow"></div>
+          <div class="role-icon">
+            <img src="tpo_logo2.png" alt="TPO" style="width: 42px; height: 42px; object-fit: contain;">
+          </div>
+          <h3>TPO Dashboard</h3>
+          <p>Access comprehensive analytics, monitor student progress, and generate institutional placement insights.</p>
+          <button class="btn secondary" data-target="tpo">
+            <span>View Dashboard</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+  <script src="enhanced-animations.js"></script>
+  <script>
+    // Enhanced loading screen with smooth transitions
+    window.addEventListener('load', () => {
+      const loadingScreen = document.getElementById('loadingScreen');
+      setTimeout(() => {
+        loadingScreen.classList.add('fade-out');
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+        }, 500);
+      }, 1200);
+    });
+
+    // Enhanced button interactions with smooth animations
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('mouseenter', () => {
+        btn.style.transform = 'translateY(-2px)';
+      });
+      
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = 'translateY(0)';
+      });
+      
+      btn.addEventListener('click', (e) => {
+        // Smooth ripple effect
+        const ripple = document.createElement('span');
+        const rect = btn.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.className = 'ripple';
+        ripple.style.cssText = `
+          position: absolute;
+          width: ${size}px;
+          height: ${size}px;
+          left: ${x}px;
+          top: ${y}px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.4);
+          transform: scale(0);
+          animation: ripple-animation 0.6s ease-out;
+          pointer-events: none;
+        `;
+        
+        btn.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+      });
+    });
+
+    // Add dynamic styles
+    const dynamicStyles = document.createElement('style');
+    dynamicStyles.textContent = `
+      @keyframes ripple-animation {
+        to {
+          transform: scale(2);
+          opacity: 0;
+        }
+      }
+      
+      .fade-out {
+        opacity: 0 !important;
+        transform: scale(1.05) !important;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+    `;
+    document.head.appendChild(dynamicStyles);
+  </script>
+</body>
+</html>

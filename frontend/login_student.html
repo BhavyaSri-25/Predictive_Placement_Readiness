@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Predictive Placement Readiness — Student Login</title>
+  <link rel="stylesheet" href="login.css">
+  <link rel="stylesheet" href="animations.css">
+  <style>
+    html, body {
+      background: linear-gradient(135deg, #E0F2FE 0%, #DCFCE7 100%) !important;
+      min-height: 100vh;
+    }
+    body::before {
+      display: none !important;
+    }
+    .auth-wrap {
+      background: transparent !important;
+    }
+  </style>
+</head>
+<!--<body class="bg-animated" style="background: linear-gradient(135deg, #F7FAFF 0%, #ECFDF3 100%) !important;">-->
+
+  <main class="auth-wrap fade-in">
+    <div class="auth-brand" style="text-align:center;margin-bottom:14px">
+      <div class="logo" style="display:inline-block">
+        <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #667eea 0%, #10b981 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);">
+          <img src="college_logo2.png" alt="College Logo" style="width: 36px; height: 36px; object-fit: contain;">
+        </div>
+      </div>
+      <div style="margin-top:8px;font-weight:400;font-family:'DM Serif Text', serif;color:#071032;font-size:1.75rem;">Predictive Placement Readiness</div>
+      <div class="muted" style="font-size:15px">Insights for student placement preparedness</div>
+    </div>
+
+    <section class="card auth-card card-animated">
+      <h2 style="display: flex; align-items: center; gap: 8px;" class="text-fade-in"><img src="student_logo2.png" alt="Student" style="width: 35px; height: 35px; object-fit: contain;"> Student Login</h2>
+      <p class="muted slide-in-left">Login using your register number and password</p>
+
+      <input id="registerNumber" type="text" placeholder="Register Number (e.g. 1MS19CS001)" class="input-animated">
+      <div style="position: relative; display: inline-block; width: 100%;">
+        <input id="password" type="password" placeholder="Password" class="input-animated" style="padding-right: 40px;">
+        <span onclick="togglePassword()" style="position: absolute; right: 12px; top: 39px; cursor: pointer; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;">
+          <img src="eye-closed.svg" alt="Show" style="width: 20px; height: 20px;">
+        </span>
+      </div>
+
+      <button onclick="loginStudent()" class="btn primary btn-animated micro-bounce">Login</button>
+
+      <p id="msg" class="success-msg" style="margin-top:10px;font-weight:bold;"></p>
+
+      <div class="auth-foot muted" style="margin-top:12px">New student? <a href="register_student.html">Register here</a></div>
+    </section>
+  </main>
+
+  <script>
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+async function loginStudent() {
+  const registerNumber = document.getElementById("registerNumber").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const msg = document.getElementById("msg");
+
+  msg.innerText = "";
+
+  // -------- VALIDATIONS --------
+  if (!registerNumber) {
+    msg.style.color = "red";
+    msg.innerText = "❌ Register number cannot be empty";
+    return;
+  }
+
+  if (!password) {
+    msg.style.color = "red";
+    msg.innerText = "❌ Password cannot be empty";
+    return;
+  }
+
+  // -------- API CALL --------
+  try {
+    const res = await fetch("/api/student/login", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ register_number: registerNumber, password })
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      msg.style.color = "green";
+      msg.innerText = "✅ Login successful!";
+      msg.style.display = 'block';
+
+      // redirect immediately
+      window.location.href = "student_profile.html";
+      return;
+    }
+    else {
+      msg.style.color = "red";
+
+      if (data.error === "User not registered") {
+        msg.innerText = "❌ You are not registered yet";
+      } 
+      else if (data.error === "Incorrect password") {
+        msg.innerText = "❌ Incorrect password";
+      } 
+      else {
+        msg.innerText = "❌ " + data.error;
+      }
+    }
+
+  } catch (error) {
+    msg.style.color = "red";
+    msg.innerText = "⚠️ Server error. Try again later.";
+  }
+}
+
+function togglePassword() {
+  const passwordField = document.getElementById('password');
+  const eyeIcon = document.querySelector('span[onclick="togglePassword()"] img');
+  
+  if (passwordField.type === 'password') {
+    passwordField.type = 'text';
+    eyeIcon.src = 'eye-open.svg';
+    eyeIcon.alt = 'Hide';
+  } else {
+    passwordField.type = 'password';
+    eyeIcon.src = 'eye-closed.svg';
+    eyeIcon.alt = 'Show';
+  }
+}
+
+// Add Enter key functionality
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    loginStudent();
+  }
+});
+</script>
+<script src="enhanced-animations.js"></script>
+
+</body>
+</html>
